@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+
+    flavorDimensions "mode"
+
+    productFlavors {
+        manual {
+            dimension "mode"
+            applicationId "com.bornbytes.walkietalkie.manual"
+        }
+        automatic {
+            dimension "mode"
+            applicationId "com.bornbytes.walkietalkie.automatic"
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.android.gms:play-services-nearby:17.0.0'
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
+}
+
