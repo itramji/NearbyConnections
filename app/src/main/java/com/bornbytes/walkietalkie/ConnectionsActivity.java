@@ -31,6 +31,7 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -204,7 +205,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
 
     protected void acceptConnection(final Endpoint endpoint) {
         mConnectionsClient
-                .acceptConnection(endpoint.getId(), mPayloadCallback)
+                .acceptConnection(endpoint.getId(), new ReceiveFilePayloadCallback(this))
                 .addOnFailureListener(
                         new OnFailureListener() {
                             @Override
@@ -266,6 +267,8 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
                         mIsDiscovering = false;
                         logW("startDiscovering() failed.", e);
                         onDiscoveryFailed();
+
+
                     }
                 });
     }
@@ -374,14 +377,23 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
         send(payload, mEstablishedConnections.keySet());
     }
 
-    private void send(Payload payload, Set<String> endpoints) {
+    private void send(final Payload payload, Set<String> endpoints) {
         mConnectionsClient
                 .sendPayload(new ArrayList<>(endpoints), payload)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (payload.getType() == Payload.Type.FILE) {
+                            Toast.makeText(ConnectionsActivity.this, "File Sent Successfully..", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
                 .addOnFailureListener(
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 logW("sendPayload() failed.", e);
+                                Toast.makeText(ConnectionsActivity.this, "Failed with error "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
     }

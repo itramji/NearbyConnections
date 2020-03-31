@@ -1,0 +1,3 @@
+<resources>
+    <bool name="isTv">false</bool>
+</resources>

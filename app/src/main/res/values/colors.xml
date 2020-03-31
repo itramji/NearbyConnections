@@ -13,4 +13,7 @@
     <color name="log_debug">#EEEEEE</color>
     <color name="log_warning">#E57373</color>
     <color name="log_error">#F44336</color>
+
+    <color name="QRCodeBlackColor">#000000</color>
+    <color name="QRCodeWhiteColor">#ffffff</color>
 </resources>
