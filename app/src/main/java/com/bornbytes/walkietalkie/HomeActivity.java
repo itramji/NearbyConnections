@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.Strategy;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
@@ -91,8 +92,8 @@ public class HomeActivity extends ConnectionsActivity {
         idTv.setText(mName);
     }
 
-    public boolean isAdvertise(){
-        return file!=null && !TextUtils.isEmpty(file.toString());
+    public boolean isAdvertise() {
+        return file != null && !TextUtils.isEmpty(file.toString());
     }
 
     @Override
@@ -137,26 +138,22 @@ public class HomeActivity extends ConnectionsActivity {
     @Override
     protected void onConnectionInitiated(final Endpoint endpoint, ConnectionInfo connectionInfo) {
         if (!isAdvertise()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Accept connection to " + connectionInfo.getEndpointName())
-                    .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
-                    .setPositiveButton(
-                            "Accept",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    acceptConnection(endpoint);
-                                }
-                            })
-                    .setNegativeButton(
-                            android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    rejectConnection(endpoint);
-                                }
-                            })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(connectionInfo.getEndpointName() + " wants to connect")
+                    .setMessage("\nConfirm the code : " + connectionInfo.getAuthenticationToken())
+                    .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            acceptConnection(endpoint);
+                        }
+                    })
+                    .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            rejectConnection(endpoint);
+                        }
+                    }).show();
+
         } else {
             acceptConnection(endpoint);
         }
@@ -173,7 +170,7 @@ public class HomeActivity extends ConnectionsActivity {
 
     private void sendFiles() {
         // The URI of the file selected by the user.
-       // Uri uri = Uri.parse("file://" + file);
+        // Uri uri = Uri.parse("file://" + file);
 
         Payload filePayload;
         try {
@@ -224,7 +221,7 @@ public class HomeActivity extends ConnectionsActivity {
     private void setState(State state) {
         if (mState == state) {
             logW("State set to " + state + " but already in that state");
-            return;
+            //return;
         }
 
         logD("State set to " + state);
@@ -369,7 +366,8 @@ public class HomeActivity extends ConnectionsActivity {
     @Override
     protected void onDiscoveryFailed() {
         super.onDiscoveryFailed();
-        Snackbar.make(getCurrentFocus().getRootView(),"Can't Search Nearby Device", Snackbar.LENGTH_SHORT).show();
+        UiUtilKt.showSnackBar(this, "Can't Search Nearby Device");
+        //Snackbar.make(retryImageView.getRootView(),"Can't Search Nearby Device", Snackbar.LENGTH_SHORT).show();
         retryImageView.setVisibility(View.VISIBLE);
     }
 }

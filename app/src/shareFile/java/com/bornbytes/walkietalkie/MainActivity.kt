@@ -1,13 +1,12 @@
 package com.bornbytes.walkietalkie
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.vincent.filepicker.Constant
-import com.vincent.filepicker.filter.entity.NormalFile
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.shareFile.activity_main.*
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
